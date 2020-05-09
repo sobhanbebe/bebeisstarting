@@ -1,10 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
-const models = require("../../models");
+const mongoose = require('mongoose');
+const models = require('../../models');
+const statusCodes = require('../../values/statusCodes');
+
+const escapeRegex = (text) => {
+  console.log({ text });
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+};
 
 //  Get all category               /category GET
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const allCategories = await models.Category.find({});
     res.status(200).json(allCategories);
@@ -14,7 +20,7 @@ router.get("/", async (req, res) => {
 });
 
 // get category by id              /category/:categoryId
-router.get("/:categoryId", async (req, res) => {
+router.get('/:categoryId', async (req, res) => {
   const categoryId = req.params.categoryId;
   console.log(categoryId.length);
   //TODO Validate object id
@@ -28,49 +34,63 @@ router.get("/:categoryId", async (req, res) => {
   }
 });
 
+// search category by name
+router.get('/s/:categoryName', async (req, res) => {
+  try {
+    const regex = new RegExp(escapeRegex(req.params.categoryName), 'gi');
+    const foundedCategory = await models.Category.find({ name: regex });
+    res.status(200).json(foundedCategory);
+  } catch (error) {
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+  }
+});
+
 // add a new category              /category POST {BODY}
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const { name, image } = req.body;
   if ((!name, !image)) return res.status(400).json({ CODE: 1021 });
   //TODO : check url is our server
   try {
     await models.Category({ name, image }).save();
-    res.status(201).json({ CODE: 2012 });
+    res.status(201).json({ CODE: statusCodes.AD_CATEGORY });
   } catch (error) {
-    res.status(500).json({ CODE: 1010 });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
 //update category by id            /category/:categoryId  {body}
-router.put("/:categoryId", async (req, res) => {
+router.put('/:categoryId', async (req, res) => {
   const categoryId = req.params.categoryId;
   try {
-    //  2-1 => whole data
-    // const { name, image } = req.body;
-    // if ((!name, !image)) throw new Error({ CODE: 1012 });
-    // mongoose.Types.ObjectId.isValid(categoryId);
-    // await models.Category.findByIdAndUpdate(categoryId, { name, image });
-    // res.status(200).json({ CODE: 2052 });
-    // //  2-2 => one field
+    // check valid id
+    mongoose.Types.ObjectId.isValid(categoryId);
+
+    // check id in database
+    const foundedCategory = await models.Category.findById(categoryId);
+    if (!foundedCategory) return res.status(500).json({ CODE: 1058 });
+
     const { fieldChange, newValue } = req.body;
     const update = {};
     update[fieldChange] = newValue;
     await models.Category.findByIdAndUpdate(categoryId, update);
-    res.status(200).json({ CODE: 2052 });
+    res.status(200).json({ CODE: statusCodes.UP_CATEGORY });
   } catch (error) {
-    res.status(500).json({ CODE: 1012 });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
 //delete a category by id          /category/:categoryId
-router.delete('/:categoryId',async(req,res)=> {
+router.delete('/:categoryId', async (req, res) => {
+  // Check current id in database
   const categoryId = req.params.categoryId;
   try {
     mongoose.Types.ObjectId.isValid(categoryId);
-  await models.Category.findByIdAndDelete(categoryId)
-  res.status(204).json({CODE:2525});
+    const foundedCategory = await models.Category.findById(categoryId);
+    if (!foundedCategory) return res.status(500).json({ CODE: 1058 });
+    await models.Category.findByIdAndDelete(categoryId);
+    res.status(204).json({ CODE: statusCodes.DL_CATEGORY });
   } catch (error) {
-    res.status(500).json({CODE:2424});
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
