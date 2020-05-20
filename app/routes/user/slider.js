@@ -7,35 +7,35 @@ const statusCodes = require("../../values/statusCodes");
 //Get all banners
 router.get("/", async (req, res) => {
   try {
-    const allBanners = await models.Banner.find({}).populate("parent");
-    res.status(200).json(allBanners);
+    const allSliders = await models.Slider.find({}).populate("parent");
+    res.status(200).json(allSliders);
   } catch (error) {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
-router.get("/:bannerId", async (req, res) => {
-  const bannerId = req.params.bannerId;
-  console.log(bannerId.length);
+router.get("/:sliderId", async (req, res) => {
+  const sliderId = req.params.sliderId;
+  console.log(sliderId.length);
   //TODO Validate object id
   try {
-    mongoose.Types.ObjectId.isValid(bannerId);
-    const bannerId = await models.Banner.findById(bannerId);
-    res.status(200).json({ CODE: foundedBanner });
+    mongoose.Types.ObjectId.isValid(sliderId);
+    const sliderId = await models.Slider.findById(sliderId);
+    res.status(200).json({ CODE: foundedSlider });
   } catch (error) {
     console.log({ error });
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
-// add a new banner              /category POST {BODY}
+// add a new Slider             /category POST {BODY}
 router.post("/", async (req, res) => {
   const { image, parent, parentType } = req.body;
   try {
-    const postedImg = await models.Banner({ image, parent, parentType }).save();
+    const postedImg = await models.Slider({ image, parent, parentType }).save();
     console.log(postedImg);
 
-    res.status(201).json({ CODE: statusCodes.DL_BANNER });
+    res.status(201).json({ CODE: statusCodes.DL_SLIDER });
   } catch (error) {
     console.log({ error: error.message });
     if (error.message.includes("require"))
@@ -45,20 +45,19 @@ router.post("/", async (req, res) => {
 });
 
 //update banner by id            /category/:categoryId  {body}
-router.put("/:bannerId", async (req, res) => {
-  const bannerId = req.params.bannerId;
+router.put("/:sliderId", async (req, res) => {
+  const sliderId = req.params.bannerId;
   try {
-    mongoose.Types.ObjectId.isValid(bannerId);
-    
+    mongoose.Types.ObjectId.isValid(sliderId);
 
     // check id in database
-    const foundedBanner = await models.Banner.findById(bannerId);
-    if (!foundedBanner)
+    const foundedSlider = await models.Slider.findById(sliderId);
+    if (!foundedSlider)
       return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
     const { fieldChange, newValue } = req.body;
     const update = {};
     update[fieldChange] = newValue;
-    await models.Banner.findByIdAndUpdate(bannerId, update);
+    await models.Slider.findByIdAndUpdate(sliderId, update);
     res.status(200).json({ CODE: statusCodes.UP_SLIDER });
   } catch (error) {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
@@ -66,16 +65,16 @@ router.put("/:bannerId", async (req, res) => {
 });
 
 //delete a banner by id          /banner/:bannerId
-router.delete("/:bannerId", async (req, res) => {
-  const bannerId = req.params.bannerId;
+router.delete("/:sliderId", async (req, res) => {
+  const sliderId = req.params.bannerId;
   try {
-    mongoose.Types.ObjectId.isValid(bannerId);
+    mongoose.Types.ObjectId.isValid(sliderId);
     // check id in database
-    const foundedBanner = await models.Banner.findById(bannerId);
-    if (!foundedBanner)
+    const foundedSlider = await models.Slider.findById(sliderId);
+    if (!foundedSlider)
       return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
-    await models.Banner.findByIdAndDelete(bannerId);
-    res.status(200).json({ CODE: statusCodes.DL_BANNER });
+    await models.Slider.findByIdAndDelete(sliderId);
+    res.status(200).json({ CODE: statusCodes.DL_SLIDER });
   } catch (error) {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }

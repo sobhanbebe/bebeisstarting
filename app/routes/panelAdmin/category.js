@@ -1,43 +1,43 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const models = require('../../models');
-const statusCodes = require('../../values/statusCodes');
+const mongoose = require("mongoose");
+const models = require("../../models");
+const statusCodes = require("../../values/statusCodes");
 
 const escapeRegex = (text) => {
   console.log({ text });
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
 //  Get all category               /category GET
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const allCategories = await models.Category.find({});
     res.status(200).json(allCategories);
   } catch (error) {
-    res.status(500).json({ CODE: 1021 });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
 // get category by id              /category/:categoryId
-router.get('/:categoryId', async (req, res) => {
+router.get("/:categoryId", async (req, res) => {
   const categoryId = req.params.categoryId;
   console.log(categoryId.length);
   //TODO Validate object id
   try {
     mongoose.Types.ObjectId.isValid(categoryId);
-    const category = await models.Category.findById(categoryId);
-    res.status(200).json(category);
+    const allCategory = await models.Category.findById(categoryId);
+    res.status(200).json(allCategory);
   } catch (error) {
     console.log({ error });
-    res.status(500).json({ CODE: 1020 });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
 // search category by name
-router.get('/s/:categoryName', async (req, res) => {
+router.get("/s/:categoryName", async (req, res) => {
   try {
-    const regex = new RegExp(escapeRegex(req.params.categoryName), 'gi');
+    const regex = new RegExp(escapeRegex(req.params.categoryName), "gi");
     const foundedCategory = await models.Category.find({ name: regex });
     res.status(200).json(foundedCategory);
   } catch (error) {
@@ -46,7 +46,7 @@ router.get('/s/:categoryName', async (req, res) => {
 });
 
 // add a new category              /category POST {BODY}
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { name, image } = req.body;
   if ((!name, !image)) return res.status(400).json({ CODE: 1021 });
   //TODO : check url is our server
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
 });
 
 //update category by id            /category/:categoryId  {body}
-router.put('/:categoryId', async (req, res) => {
+router.put("/:categoryId", async (req, res) => {
   const categoryId = req.params.categoryId;
   try {
     // check valid id
@@ -67,7 +67,8 @@ router.put('/:categoryId', async (req, res) => {
 
     // check id in database
     const foundedCategory = await models.Category.findById(categoryId);
-    if (!foundedCategory) return res.status(500).json({ CODE: 1058 });
+    if (!foundedCategory)
+      return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
 
     const { fieldChange, newValue } = req.body;
     const update = {};
@@ -80,13 +81,14 @@ router.put('/:categoryId', async (req, res) => {
 });
 
 //delete a category by id          /category/:categoryId
-router.delete('/:categoryId', async (req, res) => {
+router.delete("/:categoryId", async (req, res) => {
   // Check current id in database
   const categoryId = req.params.categoryId;
   try {
     mongoose.Types.ObjectId.isValid(categoryId);
     const foundedCategory = await models.Category.findById(categoryId);
-    if (!foundedCategory) return res.status(500).json({ CODE: 1058 });
+    if (!foundedCategory)
+      return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
     await models.Category.findByIdAndDelete(categoryId);
     res.status(204).json({ CODE: statusCodes.DL_CATEGORY });
   } catch (error) {
