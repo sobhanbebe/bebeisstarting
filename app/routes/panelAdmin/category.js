@@ -10,6 +10,20 @@ const escapeRegex = (text) => {
 };
 
 //  Get all category               /category GET
+router.get("/:page", async (req, res) => {
+  const { page } = req.params;
+  try {
+    const allCategories = await models.Category.paginate(
+      {},
+      { page, limit: 10 }
+    );
+    res.status(200).json(allCategories);
+  } catch (error) {
+    console.log({ error });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const allCategories = await models.Category.find({});

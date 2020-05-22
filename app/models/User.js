@@ -12,6 +12,7 @@ const User = mongoose.Schema({
   email: { type: String },
   token: [{ type: String }],
   isActive: { type: Boolean, default: true },
+  isAdmin: {type: Boolean, default: false},
 });
 
 module.exports = mongoose.model("User", User);

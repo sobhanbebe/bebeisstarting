@@ -1,8 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
 
 const Category = mongoose.Schema({
-    name: { type: String, required: true },
-    image:{type:String,require:true},
+  name: { type: String, required: true },
+  image: { type: String, require: true },
 });
 
-module.exports = mongoose.model('Category', Category);
+mongoose.plugin(mongoosePaginate);
+module.exports = mongoose.model("Category", Category);

@@ -3,32 +3,16 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const configs = require("./values/configs");
 // const swaggerUi = require("swagger-ui-express");
 const { adminRoutes, userRoutes } = require("./routes");
 
 //TODO connect to mongodb
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:sobhanbebe@cluster0-wegfy.mongodb.net/test?retryWrites=true&w=majority",{ useNewUrlParser: true , useUnifiedTopology: true  }
-  )
-  .then(() => console.log("Connected to MongoDB..."))
-  .catch((err) => console.error("Could not connect to MongoDB...", err));
-
-// mongodb+srv://root:<password>@cluster0-fyrf6.mongodb.net/test?retryWrites=true&w=majority
-// mongoose.connect('mongodb+srv://root:Mehrad1234!@cluster0-fyrf6.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true }, (err) => {
-// mongoose.connect(
-//   "mongodb://localhost:27017/node-blog",
-//   { useNewUrlParser: true },
-//   (err) => {
-//     if (err) {
-//       console.log("Some problem with the connection " + err);
-//     } else {
-//       console.log("The Mongoose connection is ready");
-//     }
-//   }
-// );
+  .connect(configs.MONGOOSE_CONNECTION_URL, configs.MONGOOSE_CONFIG)
+  .then(() => console.log("MONGOOSE CONNECTED"))
+  .catch(err => console.log({ err }));
 
 //Express Config
 app.use(morgan("dev"));
@@ -40,6 +24,7 @@ app.use("/api/v1/admin/upload", adminRoutes.uploadImage);
 app.use("/api/v1/admin/category", adminRoutes.category);
 app.use("/api/v1/admin/banner", adminRoutes.banner);
 app.use("/api/v1/admin/slider", adminRoutes.slider);
+app.use("/api/v1/admin/login", adminRoutes.login);
 
 app.use("/api/v1/slider", userRoutes.slider);
 app.use("/api/v1/category", userRoutes.category);

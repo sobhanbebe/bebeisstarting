@@ -1,11 +1,11 @@
 const http = require('http');
 const app = require('./app');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8443;
 
 const server = http.createServer(app);
 
-server.listen(port,(err)=>{
-    if(err) console.log({err})
+server.listen(port, (err) => {
+    if (err) console.log({ err })
     else console.log("Server Connected on port = " + port)
 });

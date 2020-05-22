@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
 
 const Banner = mongoose.Schema({
   image: { type: String, require: true },
@@ -7,3 +8,4 @@ const Banner = mongoose.Schema({
 });
 
 module.exports = mongoose.model("Banner", Banner);
+mongoose.plugin(mongoosePaginate);

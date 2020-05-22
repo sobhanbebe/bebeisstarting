@@ -5,15 +5,29 @@ const mongoose = require("mongoose");
 const statusCodes = require("../../values/statusCodes");
 
 //Get all banners
-router.get("/", async (req, res) => {
-  try {
-    const allBanners = await models.Banner.find({}).populate("parent");
-    res.status(200).json(allBanners);
-  } catch (error) {
-    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
-  }
-});
 
+router.get("/:page", async (req, res) => {
+  const { page } = req.params;
+  try {
+    const allBanners = await models.Banner.paginate(
+      {},
+      { page, limit: 10 }
+      );
+      res.status(200).json(allBanners);
+    } catch (error) {
+      console.log({ error });
+      res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+    }
+  });
+  
+router.get("/", async (req, res) => {
+    try {
+      const allBanners = await models.Banner.find({}).populate("parent");
+      res.status(200).json(allBanners);
+    } catch (error) {
+      res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+    }
+  });
 router.get("/:bannerId", async (req, res) => {
   const bannerId = req.params.bannerId;
   console.log(bannerId.length);

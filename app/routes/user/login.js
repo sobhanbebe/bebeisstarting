@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const models = require("../../models");
 const jwt = require("jsonwebtoken");
 const utils = require("../../utils");
@@ -19,14 +18,13 @@ router.post("/", async (req, res) => {
         .status(400)
         .json({ CODE: statusCodes.ER_USER_IS_NOT_REGISTERED });
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
-    utils.sendSms(phoneNumber, "Salam")
-      //TODO send sms text
-      const verification = await models.Verification({
-        verificationCode,
-        phoneNumber,
-      });
-    }
-   catch (error) {
+    utils.sendSms(phoneNumber, "Salam");
+    //TODO send sms text
+    const verification = await models.Verification({
+      verificationCode,
+      phoneNumber,
+    });
+  } catch (error) {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });

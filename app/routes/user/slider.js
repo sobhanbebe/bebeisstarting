@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
 
 //update banner by id            /category/:categoryId  {body}
 router.put("/:sliderId", async (req, res) => {
-  const sliderId = req.params.bannerId;
+  const sliderId = req.params.sliderId;
   try {
     mongoose.Types.ObjectId.isValid(sliderId);
 
@@ -66,7 +66,7 @@ router.put("/:sliderId", async (req, res) => {
 
 //delete a banner by id          /banner/:bannerId
 router.delete("/:sliderId", async (req, res) => {
-  const sliderId = req.params.bannerId;
+  const sliderId = req.params.sliderId;
   try {
     mongoose.Types.ObjectId.isValid(sliderId);
     // check id in database

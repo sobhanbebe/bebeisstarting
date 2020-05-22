@@ -3,6 +3,7 @@ const Product = require("./Product");
 const Slider = require("./Slider");
 const Banner = require("./Banner");
 const User = require("./User");
+const Admin = require("./Admin");
 const Verification = require("./Verification");
 
 const models = {
@@ -11,9 +12,8 @@ const models = {
   Slider,
   Banner,
   User,
-  Verification
-  
-
+  Verification,
+  Admin,
 };
 
 module.exports = models;

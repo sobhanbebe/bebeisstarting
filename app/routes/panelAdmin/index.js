@@ -3,7 +3,7 @@ const uploadImage = require("./uploadImage")
 const category = require("./category")
 const banner = require("./banner")
 const slider = require("./slider")
-
+const login = require("./login");
 
 
 
@@ -12,5 +12,6 @@ module.exports={
     product,
     category,
     slider,
-    banner
+    banner,
+    login
 }

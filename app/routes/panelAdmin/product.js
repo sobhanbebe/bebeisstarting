@@ -17,6 +17,19 @@ router.get("/", async (req, res) => {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
+router.get("/:page", async (req, res) => {
+  const { page } = req.params;
+  try {
+    const allProducts = await models.Product.paginate(
+      {},
+      { page, limit: 10 }
+    );
+    res.status(200).json(allProducts);
+  } catch (error) {
+    console.log({ error });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+  }
+});
 
 router.get("/:productId", async (req, res) => {
   const productId = req.params.productId;
