@@ -29,6 +29,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+let imageName = false;
 // ====================== Upload image ========================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -36,10 +37,9 @@ const storage = multer.diskStorage({
     cb(null, './images');
   },
   filename: function (req, file, cb) {
-    console.log({ TIME: moment().format('jYYYY/jM/jD') });
-    if (file.mimetype === 'image/png') cb(null, req.body.imageName + '.png');
-    else if (file.mimetype === 'image/jpeg') cb(null, req.body.imageName + '.jpg');
-    else cb(null, false);
+    if (file.mimetype === 'image/png') imageName = req.body.imageName + '.png';
+    else if (file.mimetype === 'image/jpeg') imageName = req.body.imageName + '.jpg';
+    cb(null, imageName);
   },
 });
 
@@ -52,8 +52,14 @@ const upload = multer({ storage, fileFilter });
 
 router.post('/', upload.single('image'), async (req, res) => {
   if (!req.file) res.status(500).json({ Error: 'Error' });
-  const imageUrl = configs.BASE_URL + `/images/${req.file.originalname}`;
-  res.status(200).json({ imageUrl });
+  const imageUrl = configs.BASE_URL + `images/${imageName}`;
+  try {
+    await models.Image({ name: req.body.imageName, url: imageUrl }).save();
+    res.status(200).json({ imageUrl });
+  } catch (error) {
+    console.log({ error });
+    res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+  }
 });
 
 module.exports = router;
