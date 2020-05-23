@@ -1,29 +1,26 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const models = require("../../models");
-const mongoose = require("mongoose");
-const statusCodes = require("../../values/statusCodes");
+const models = require('../../models');
+const mongoose = require('mongoose');
+const statusCodes = require('../../values/statusCodes');
 
 const escapeRegex = (text) => {
   console.log({ text });
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 };
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const allProducts = await models.Product.find({}).populate("category");
+    const allProducts = await models.Product.find({}).populate('category');
     res.status(200).json(allProducts);
   } catch (error) {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
-router.get("/:page", async (req, res) => {
+router.get('/:page', async (req, res) => {
   const { page } = req.params;
   try {
-    const allProducts = await models.Product.paginate(
-      {},
-      { page, limit: 10 }
-    );
+    const allProducts = await models.Product.paginate({}, { page, limit: 10, populate: 'category' });
     res.status(200).json(allProducts);
   } catch (error) {
     console.log({ error });
@@ -31,7 +28,7 @@ router.get("/:page", async (req, res) => {
   }
 });
 
-router.get("/:productId", async (req, res) => {
+router.get('/:productId', async (req, res) => {
   const productId = req.params.productId;
   console.log(productId.length);
   //TODO Validate object id
@@ -46,9 +43,9 @@ router.get("/:productId", async (req, res) => {
 });
 
 // search product by name
-router.get("/s/:productName", async (req, res) => {
+router.get('/s/:productName', async (req, res) => {
   try {
-    const regex = new RegExp(escapeRegex(req.params.productName), "gi");
+    const regex = new RegExp(escapeRegex(req.params.productName), 'gi');
     const foundedProducts = await models.Product.find({ name: regex });
     res.status(200).json(foundedProducts);
   } catch (error) {
@@ -58,31 +55,27 @@ router.get("/s/:productName", async (req, res) => {
 });
 
 // add a new category              /category POST {BODY}
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   const { name, image, realPrice, weight, unit, newPrice, category } = req.body;
   //TODO : check url is our server
   try {
-    await models
-      .Product({ name, image, realPrice, weight, unit, newPrice, category })
-      .save();
+    await models.Product({ name, image, realPrice, weight, unit, newPrice, category }).save();
     res.status(201).json({ CODE: statusCodes.AD_PRODUCT });
   } catch (error) {
-    if (error.message.includes("require"))
-      return res.status(500).json({ CODE: statusCodes.ER_PARAMS });
+    if (error.message.includes('require')) return res.status(500).json({ CODE: statusCodes.ER_PARAMS });
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
 
 //update category by id            /category/:categoryId  {body}
-router.put("/:productId", async (req, res) => {
+router.put('/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
     mongoose.Types.ObjectId.isValid(productId);
 
     // check id in database
     const foundedProduct = await models.Product.findById(productId);
-    if (!foundedProduct)
-      return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+    if (!foundedProduct) return res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
     const { fieldChange, newValue } = req.body;
     const update = {};
     update[fieldChange] = newValue;
@@ -94,7 +87,7 @@ router.put("/:productId", async (req, res) => {
 });
 
 //delete a product by id          /category/:categoryId
-router.delete("/:productId", async (req, res) => {
+router.delete('/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
     mongoose.Types.ObjectId.isValid(productId);

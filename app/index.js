@@ -8,8 +8,6 @@ const cors = require('cors');
 // const swaggerUi = require("swagger-ui-express");
 const { adminRoutes, userRoutes } = require('./routes');
 
-//TODO connect to mongodb
-
 mongoose
   .connect(configs.MONGOOSE_CONNECTION_URL, configs.MONGOOSE_CONFIG)
   .then(() => console.log('MONGOOSE CONNECTED'))
