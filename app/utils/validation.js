@@ -1,4 +1,4 @@
-const joi = require("@hapi/joi");
+const joi = require('@hapi/joi');
 
 const phoneNumberValidator = joi.object({
   phoneNumber: joi.string().required().max(11).min(11),
@@ -20,6 +20,7 @@ const validPhoneNumber = async (phoneNumber) => {
   if (isValid.error) return false;
   else return true;
 };
+
 const validVerificationCode = async (verificationCode) => {
   const isValid = await verificationCodeValidator.validate({
     verificationCode,
@@ -27,6 +28,7 @@ const validVerificationCode = async (verificationCode) => {
   if (isValid.error) return false;
   else return true;
 };
+
 const validPassword = async (validPassword) => {
   console.log({ validPassword });
   const isValid = await passwordValidator.validate({ password: validPassword });
@@ -35,8 +37,19 @@ const validPassword = async (validPassword) => {
   else return true;
 };
 
+const validImage = async (imageUrl) => {
+  if (imageUrl.toLowerCase().startsWith('https://pernymarket.ir')) return true;
+  else return false;
+};
+
+const validText = (text) => {
+  if (text && text.length > 0) return true;
+  else return false;
+};
 module.exports = {
   validPhoneNumber,
   validVerificationCode,
   validPassword,
+  validText,
+  validImage,
 };

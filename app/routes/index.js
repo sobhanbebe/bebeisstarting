@@ -1,7 +1,7 @@
-const userRoutes = require('./user')
-const adminRoutes = require('./panelAdmin')
+const userRoutes = require('./user');
+const adminRoutes = require('./admin');
 
 module.exports = {
-    adminRoutes,
-    userRoutes
-}
+  adminRoutes,
+  userRoutes,
+};

@@ -1,10 +1,11 @@
-const Category = require("./Category");
-const Product = require("./Product");
-const Slider = require("./Slider");
-const Banner = require("./Banner");
-const User = require("./User");
-const Admin = require("./Admin");
-const Verification = require("./Verification");
+const Category = require('./Category');
+const Product = require('./Product');
+const Slider = require('./Slider');
+const Banner = require('./Banner');
+const User = require('./User');
+const Admin = require('./Admin');
+const Verification = require('./Verification');
+const Image = require('./Image');
 
 const models = {
   Category,
@@ -14,6 +15,7 @@ const models = {
   User,
   Verification,
   Admin,
+  Image,
 };
 
 module.exports = models;
