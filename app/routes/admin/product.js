@@ -56,10 +56,11 @@ router.get('/s/:productName', async (req, res) => {
 
 // add a new category              /category POST {BODY}
 router.post('/', async (req, res) => {
-  const { name, image, realPrice, weight, unit, newPrice, category } = req.body;
+  const { name, image, realPrice, weight, unit, newPrice, category, discount } = req.body;
   //TODO : check url is our server
   try {
-    await models.Product({ name, image, realPrice, weight, unit, newPrice, category }).save();
+    const discount = Math.floor(((realPrice - newPrice) / realPrice) *100);
+    await models.Product({ name, image, realPrice, weight, unit, newPrice, category, discount }).save();
     res.status(201).json({ CODE: statusCodes.AD_PRODUCT });
   } catch (error) {
     if (error.message.includes('require')) return res.status(500).json({ CODE: statusCodes.ER_PARAMS });

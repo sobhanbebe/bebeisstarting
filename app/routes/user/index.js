@@ -5,6 +5,7 @@ const slider = require("./slider");
 const signup = require('./signup');
 const login = require("./login");
 const cart = require("./cart");
+const homeScreen = require("./homeScreen");
 module.exports = {
   product,
   category,
@@ -12,6 +13,7 @@ module.exports = {
   login,
   banner,
   signup,
-  cart
+  cart,
+  homeScreen
   
 };

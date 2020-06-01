@@ -28,6 +28,20 @@ router.get("/:sliderId", async (req, res) => {
   }
 });
 
+router.get("/p/:page", async (req, res) => {
+  const { page } = req.params;
+  try {
+    const allSliders = await models.Slider.paginate(
+      {},
+      { page, limit: 10 }
+      );
+      res.status(200).json(allSliders);
+    } catch (error) {
+      console.log({ error });
+      res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+    }
+  });
+
 // add a new Slider             /category POST {BODY}
 router.post("/", async (req, res) => {
   const { image, parent, parentType } = req.body;

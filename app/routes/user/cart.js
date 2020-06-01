@@ -8,8 +8,9 @@ const middleware = require("../../middleware");
 router.post("/", middleware.userAuthentication, async (req, res) => {
   const { count, productId } = req.body;
   console.log(req.body);
+  console.log(req.userData)
 
-  const userId = "5ec23dba9f17480a8487d181";
+  
   try {
     const isValid = mongoose.Types.ObjectId.isValid(productId);
     console.log(isValid);

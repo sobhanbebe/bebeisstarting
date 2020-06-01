@@ -13,6 +13,8 @@ const ER_USER_IS_NOT_REGISTERED = 1014;
 const ER_USER_NOT_REGISTERED = 1015;
 const ER_ADMIN_IS_NOT_REGISTERED = 1016;
 const ER_AUTH_FAILED = 1017;
+const ER_PRODUCT_NOT_FOUND = 1018;
+
 // ================== Update
 const UP_CATEGORY = 3010;
 const UP_PRODUCT = 3011;
@@ -51,6 +53,7 @@ const statusCodes = {
   ER_USER_NOT_REGISTERED,
   ER_ADMIN_IS_NOT_REGISTERED,
   ER_AUTH_FAILED,
+  ER_PRODUCT_NOT_FOUND,
   ///============= Updates
   UP_BANNER,
   UP_SLIDER,

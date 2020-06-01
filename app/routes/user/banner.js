@@ -26,5 +26,18 @@ router.get("/:bannerId", async (req, res) => {
     res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
   }
 });
+router.get("/p/:page", async (req, res) => {
+  const { page } = req.params;
+  try {
+    const allBanners = await models.Banner.paginate(
+      {},
+      { page, limit: 10 }
+      );
+      res.status(200).json(allBanners);
+    } catch (error) {
+      console.log({ error });
+      res.status(500).json({ CODE: statusCodes.ER_SMT_WRONG });
+    }
+  });
 
 module.exports = router;
